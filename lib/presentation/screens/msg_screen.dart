@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mqtt_impl/presentation/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -165,7 +166,7 @@ class _MessageScreenState extends State<MessageScreen> {
             ? () {
           _handleSubscribePress(state);
         }
-            : null, //,
+            : null,
         child: state == MQTTAppConnectionState.connectedSubscribed
             ? const Text('Unsubscribe')
             : const Text('Subscribe'));
@@ -203,11 +204,15 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
+  String _generateRandom() {
+    var random = Random();
+    const length = 8;
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return List.generate(length, (index) => chars[random.nextInt(chars.length)]).join();
+  }
+
   void _publishMessage(String text) {
-    String osPrefix = 'Flutter_iOS';
-    if (Platform.isAndroid) {
-      osPrefix = 'Flutter_Android';
-    }
+    String osPrefix = _generateRandom();
     final String message = '$osPrefix says: $text';
     _manager.publish(message);
     _messageTextController.clear();

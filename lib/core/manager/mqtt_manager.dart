@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -11,12 +13,18 @@ class MQTTManager extends ChangeNotifier {
   String? _host;
   String _topic = "";
 
+  String _generateRandom() {
+    var random = Random();
+    const length = 8;
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return List.generate(length, (index) => chars[random.nextInt(chars.length)]).join();
+  }
+
   void initializeMQTTClient({
     required String host,
-    required String identifier,
   }) {
 
-    _identifier = identifier;
+    _identifier = 'Client_${_generateRandom()}';
     _host = host;
     _client = MqttServerClient(_host!, _identifier);
     _client!.port = 1883;
